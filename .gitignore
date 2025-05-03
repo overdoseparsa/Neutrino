@@ -127,3 +127,9 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+# adding the prouction_venv 
+production_venv/
+# adding the test_django
+test_django
+# adding the zed Editor 
+.zed
