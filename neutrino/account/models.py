@@ -184,8 +184,8 @@ class UserSettings(BaseModel):
     
 
     class Meta:
-        verbose_name = 'تنظیمات کاربر'
-        verbose_name_plural = 'تنظیمات کاربران'
+        verbose_name = 'setting Account'
+        verbose_name_plural = 'Settings'
 
     def __str__(self):
         return f'تنظیمات {self.user.username}'

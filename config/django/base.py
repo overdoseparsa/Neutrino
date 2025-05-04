@@ -1,6 +1,5 @@
 import os
 from config.env import env, BASE_DIR
-from neutrino.account.models import DefaultUser
 
 env.read_env(os.path.join(BASE_DIR, ".env"))
 
@@ -99,6 +98,8 @@ if os.environ.get('GITHUB_WORKFLOW'):
         }
     }
 
+from neutrino.account.models import DefaultUser
+''' why import here because we have to import aftrer we register app in Local_app '''
 
 AUTH_USER_MODEL = DefaultUser
 
