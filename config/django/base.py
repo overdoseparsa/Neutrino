@@ -16,9 +16,10 @@ ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=['*'])
 LOCAL_APPS = [
     'neutrino.core.apps.CoreConfig',
     'neutrino.common.apps.CommonConfig',
-    'neutrino.users.apps.UsersConfig',
+    # 'neutrino.users.apps.UsersConfig',
     'neutrino.authentication.apps.AuthenticationConfig',
     'neutrino.account.apps.AccountConfig' , 
+
 ]
 
 THIRD_PARTY_APPS = [
@@ -98,10 +99,9 @@ if os.environ.get('GITHUB_WORKFLOW'):
         }
     }
 
-from neutrino.account.models import DefaultUser
 ''' why import here because we have to import aftrer we register app in Local_app '''
 
-AUTH_USER_MODEL = DefaultUser
+AUTH_USER_MODEL = 'account.DefaultUser'
 
 # Password validation
 # https://docs.djangoproject.com/en/3.0/ref/settings/#auth-password-validators
@@ -120,7 +120,7 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
-AUTH_USER_MODEL = 'users.BaseUser'
+# AUTH_USER_MODEL = 'users.BaseUser'
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.0/topics/i18n/

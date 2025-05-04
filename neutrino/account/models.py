@@ -1,9 +1,9 @@
-from neutrino.common.models import BaseModel
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.dispatch import receiver
 from django.core.validators import validate_ipv4_address , validate_ipv46_address
-from django.conf import settings
+from neutrino.common.models import BaseModel
+from django.contrib.auth.models import BaseUserManager as BUM
 
 from .validator import (
     ValidationsAccount , FileValidatoPentrate , PhoneValidator
@@ -13,22 +13,63 @@ from .Field import (
 )
 from django_countries.fields import CountryField
 
-class Profile(BaseModel): # cant update profile
+"""
+Hint ...
+whay i dont use AUTH_USER_MODEL from my Relateion 
+``` settings.py 
+from neutrino.account import models
+
+AUTH_USER_MODEL = DefaultUser
+```
+ti 
+from neutrino.account import models
+ is not finished it can defint the AUTH_USER_MODEL
+
+"""
+class Profile(BaseModel): # can `t update profile
     image_path = models.ImageField(
         validators=[
             FileValidatoPentrate ,
         ]
     )
-
     def __str__(self):
         return f'{self.user} : {self.created_at}'
 
 
+class BaseUserManager(BUM): 
+    def create_user(self, email, is_active=True, is_admin=False, password=None):
+        if not email:
+            raise ValueError("Users must have an email address")
+
+        user = self.model(email=self.normalize_email(email.lower()), is_active=is_active, is_admin=is_admin)
+
+        if password is not None:
+            user.set_password(password)
+        else:
+            user.set_unusable_password()
+
+        user.full_clean()
+        user.save(using=self._db)
+
+        return user
+
+    def create_superuser(self, email, password=None):
+        user = self.create_user(
+            email=email,
+            is_active=True,
+            is_admin=True,
+            password=password,
+        )
+
+        user.is_superuser = True
+        user.save(using=self._db)
+
+        return user
 
 
 class UserNetworkProfile(BaseModel):
     user = models.OneToOneField(
-                settings.AUTH_USER_MODEL,
+                'DefaultUser' , 
                 on_delete=models.CASCADE, related_name='network_profile'
     )
 
@@ -65,7 +106,7 @@ class UserNetworkProfile(BaseModel):
 
 
 
-class BaseUser(AbstractUser , BaseModel):
+class BaseUserAccount(AbstractUser , BaseModel):
     profile = models.OneToOneField(
         Profile ,
         on_delete=models.DO_NOTHING  ,
@@ -75,8 +116,8 @@ class BaseUser(AbstractUser , BaseModel):
 
     
     class Gender(models.TextChoices):
-        Mail = 'Mail' , 1
-        Femail = 'Woman' , 0
+        MAIL = '1' , 'mail'
+        FEMAIL =  '0' , 'femail'
     gender = models.CharField(
         max_length=1 , 
         choices= Gender.choices 
@@ -85,7 +126,7 @@ class BaseUser(AbstractUser , BaseModel):
     about = models.TextField(blank=True)
 
     USERNAME_FIELD = "username"
-    REQUIRED_FIELDS = ["username", "gender"]
+    REQUIRED_FIELDS = ["email"]
 
 
     phone = PhoneField(
@@ -97,10 +138,10 @@ class BaseUser(AbstractUser , BaseModel):
     is_pro_user = models.BooleanField(default=0)
     is_limited = models.BooleanField(default=0)
     connection = models.ForeignKey(
-        'self' , on_delete=models.CASECADE , related_name = 'FOLLOWING'
+        'self' , on_delete=models.CASCADE , related_name = 'FOLLOWING'
     )
     forward_connection = models.ForeignKey(
-        'self' , on_delete=models.CASECADE , related_name = 'FOLLOWER'
+        'self' , on_delete=models.CASCADE , related_name = 'FOLLOWER'
     )
 
     def __str__(self):
@@ -118,6 +159,7 @@ class BaseUser(AbstractUser , BaseModel):
     read_receipts = models.BooleanField(
         default=True,
     )
+    objects = BaseUserManager()
 
 
 class UserSettings(BaseModel):
@@ -132,7 +174,7 @@ class UserSettings(BaseModel):
         NONE = 'none', 'هیچکدام'
 
     user = models.OneToOneField(
-        settings.AUTH_USER_MODEL,
+        'DefaultUser',
         on_delete=models.CASCADE,
         related_name='settings',
         verbose_name='کاربر'
@@ -152,8 +194,8 @@ class UserSettings(BaseModel):
     )
 
     last_seen_profiles_day = models.ForeignKey(
-        settings.AUTH_USER_MODEL ,
-        on_delete=models.CASECADE , 
+        'DefaultUser' ,
+        on_delete=models.CASCADE , 
         related_name ='SeenProfile' , 
         related_query_name="seenprofiles"
         )
@@ -189,6 +231,10 @@ class UserSettings(BaseModel):
 
     def __str__(self):
         return f'تنظیمات {self.user.username}'
-class DefaultUser(BaseUser):...
+class DefaultUser(BaseUserAccount):
+    posts_count = models.PositiveIntegerField(default=0)
+    subscriber_count = models.PositiveIntegerField(default=0)
+    subscription_count = models.PositiveIntegerField(default=0)
+    bio = models.CharField(max_length=1000, null=True, blank=True)
 
 
