@@ -1,5 +1,6 @@
 import os
 from config.env import env, BASE_DIR
+from neutrino.account.models import DefaultUser
 
 env.read_env(os.path.join(BASE_DIR, ".env"))
 
@@ -18,6 +19,7 @@ LOCAL_APPS = [
     'neutrino.common.apps.CommonConfig',
     'neutrino.users.apps.UsersConfig',
     'neutrino.authentication.apps.AuthenticationConfig',
+    'neutrino.account.apps.AccountConfig' , 
 ]
 
 THIRD_PARTY_APPS = [
@@ -28,6 +30,7 @@ THIRD_PARTY_APPS = [
     'corsheaders',
     'drf_spectacular',
     'django_extensions',
+    'django_countries' ,
 ]
 
 INSTALLED_APPS = [
@@ -97,6 +100,8 @@ if os.environ.get('GITHUB_WORKFLOW'):
     }
 
 
+AUTH_USER_MODEL = DefaultUser
+
 # Password validation
 # https://docs.djangoproject.com/en/3.0/ref/settings/#auth-password-validators
 
@@ -146,6 +151,7 @@ REST_FRAMEWORK = {
     ),
     'DEFAULT_AUTHENTICATION_CLASSES': []
 }
+
 
 
 # Redis
