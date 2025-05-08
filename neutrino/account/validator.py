@@ -21,7 +21,7 @@ class BaseValidtorMixinCore:
         values_validator = RegexValidator(regex=FileValidatoPentrate.regex) 
         values_validator(values)
 
-
+from rest_framework.serializers import Serializer
 
 class FileValidatoPentrate(
     BaseValidtorMixinCore

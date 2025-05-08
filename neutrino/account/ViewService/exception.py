@@ -1,0 +1,3 @@
+
+from django.http import HttpResponseForbidden
+class InsertionServerError(HttpResponseForbidden):...

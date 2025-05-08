@@ -11,8 +11,8 @@ from django.conf import settings
 from django.http import HttpResponseServerError
 from drf_spectacular.utils import extend_schema
 from django.contrib.auth import get_user_model
-
-'/account/<int:id>/'
+from django.http import JsonResponse
+'/account/<int:id>/?=base_query_dict'
 class ProfileViewApi(APIView):
     """ Simple Api view for profile """
 
@@ -28,8 +28,8 @@ class ProfileViewApi(APIView):
     def get(self , request , *args , **kwargs):
         # TODO add The permision and auth to User model
         query = GET_User_Info(request  ,*args , **kwargs )
+
         serializer = self.OutPutSerializer(query)
-        # TODO check internull validation
         return Response(
-                serializer.data , status = HTTP_200_OK
-            )
+                    serializer.data , status = HTTP_200_OK
+                )
