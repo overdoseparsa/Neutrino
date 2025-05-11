@@ -12,6 +12,10 @@ from django.http import HttpResponseServerError
 from drf_spectacular.utils import extend_schema
 from django.contrib.auth import get_user_model
 from django.http import JsonResponse
+
+
+
+
 '/account/<int:id>/?=base_query_dict'
 class ProfileViewApi(APIView):
     """ Simple Api view for profile """
@@ -33,3 +37,10 @@ class ProfileViewApi(APIView):
         return Response(
                     serializer.data , status = HTTP_200_OK
                 )
+
+
+
+
+class CreateAccountApiView(APIView):
+    def post(self , request , *args , **kwargs):
+        pass
