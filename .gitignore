@@ -133,3 +133,6 @@ production_venv/
 test_django
 # adding the zed Editor 
 .zed
+# this is for migrations 
+migrations/
+
