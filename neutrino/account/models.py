@@ -150,6 +150,22 @@ class UserSettings(BaseModel):
 
 # change manager 
 class DefaultUser(BaseUserAccount):
+    '''
+    it is better to separation the InfoPprofile from Defualt user
+    becuse we have odd addition data filed when we work with 
+    DefualtUser for auth or auhorize 
+    and if we want to see the Profile info 
+    we just simple requesting 
+    >>> Defualtuser.create(**kwargs)   
+    ... 
+    '''
+
+class InfoProfileUser(models.Model):
+    profile_info = models.OneToOneField(
+        DefaultUser ,
+        on_delete=models.CASCADE , 
+        related_name='Profile_Info'
+    )
     posts_count = models.PositiveIntegerField(default=0)
     subscriber_count = models.PositiveIntegerField(default=0)
     subscription_count = models.PositiveIntegerField(default=0)
@@ -159,8 +175,7 @@ class DefaultUser(BaseUserAccount):
 class UserNetworkProfile(BaseModel):
     user = models.OneToOneField(
                 DefaultUser ,
-                on_delete=models.CASCADE, related_name='network_profile'
-    )
+                on_delete=models.CASCADE, related_name='network_profile')
 
     # اطلاعات IP
     ipv4_address = models.GenericIPAddressField(protocol='IPv4', null=True, blank=True)
