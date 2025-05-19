@@ -32,35 +32,38 @@ class FileValidatoPentrate(
 class PhoneValidator(BaseValidtorMixinCore):
     regex = r"^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$"
 
-    
+class SqInjectionSafeValidator(BaseValidtorMixinCore):
+    regex = r'^[^"\';<>]*$'
+
 class ValidationsAccount:
     username_validation = RegexValidator(
-        regex=r'^(?=.*[A-Z])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]+$',
-        message='''
+        regex = r'^(?=.*[A-Z])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]+$',
+        message = '''
         Username must to have a Upperlowercase
         - Username must have
         - Username have a One SpeailCractor
         '''  ,
-        code='Dont_access_username'
+        code = 'Dont_access_username'
     )
 
 
     email_validation = EmailValidator(
-        message="""
-         have mail be confirmed from server
-
+        message = """
+        have mail be confirmed from server
         """
          ,
         code = "invalid_mail" ,
     )
-from django.db import models
+    phone_validation = PhoneValidator(
+        message = '''
+        - phone is not validate`t  
+        '''  ,
+        code ='Dont_access_username'
+    )
 
-models.FileField()
-# my base validator
-def main():
-    my_file = 'parsa.gif' # whan i create static File i will adding the another ruls 
-    obj_validator = FileValidatoPentrate()
-    obj_validator(value=my_file)
-
-
-if __name__ =='__main__':main()
+    sql_injection_safe_validator = SqInjectionSafeValidator( # TODO save ip and more Header request
+        message = """
+        it is not good confor mation for injection 
+        """ , 
+        code = "sql_injection" 
+    )

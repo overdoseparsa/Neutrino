@@ -30,7 +30,6 @@ from neutrino.account import models
 
 
 
-
 class BaseUserAccount(AbstractUser , BaseModel):
 
     class Gender(models.TextChoices):
@@ -149,7 +148,7 @@ class UserSettings(BaseModel):
     def __str__(self):
         return f'تنظیمات {self.user.username}'
 
-
+# change manager 
 class DefaultUser(BaseUserAccount):
     posts_count = models.PositiveIntegerField(default=0)
     subscriber_count = models.PositiveIntegerField(default=0)
@@ -210,3 +209,5 @@ class Profile(BaseModel): # can `t update profile
     )
     def __str__(self):
         return f'{self.user} : {self.created_at}'
+
+

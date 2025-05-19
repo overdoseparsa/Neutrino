@@ -2,7 +2,7 @@ from .base import *  # noqa
 
 # Based on https://www.hacksoft.io/blog/optimize-django-build-to-run-faster-on-github-actions
 
-DEBUG = False
+DEBUG = True
 PASSWORD_HASHERS = ['django.contrib.auth.hashers.MD5PasswordHasher']
 
 CELERY_BROKER_BACKEND = "memory"
