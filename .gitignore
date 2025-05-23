@@ -135,4 +135,5 @@ test_django
 .zed
 # this is for migrations 
 migrations/
-
+# adding TODO folder 
+TODO/
