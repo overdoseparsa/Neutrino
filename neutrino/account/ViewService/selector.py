@@ -37,4 +37,3 @@ def GET_User_Info(request ,*args ,**kwargs)-> QuerySet[DefaultUser]:
         print('the content with fileds is '  , repr(content))
     return content
 
-

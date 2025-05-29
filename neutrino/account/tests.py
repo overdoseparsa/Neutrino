@@ -21,4 +21,4 @@ def test_query_param():
         r'^[a-zA-Z0-9_,]+$' , 'asdasd'
     ))
     print('ending testing  Regex')
-test_query_param()
+#test_query_param()

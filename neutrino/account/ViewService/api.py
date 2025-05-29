@@ -49,14 +49,17 @@ class CreateAccountApiView(APIView):
     class InputSeralizer(serializers.Serializer):
     # فیلدهای دلخواه تعریف میکنیم
         username = serializers.CharField(
-            max_length=150  , 
+            max_length=150  ,
+            required = True  , 
             validators=[
-            UnicodeUsernameValidator() ,
+            UnicodeUsernameValidator() , 
+            ValidationsAccount.NotEmpty , 
             ] 
             )
         email = serializers.EmailField(
             validators=[
             ValidationsAccount.email_validation ,
+            ValidationsAccount.NotEmpty 
             ] 
         )
         date_create_account = serializers.DateTimeField(
@@ -93,13 +96,12 @@ class CreateAccountApiView(APIView):
             'date_joined',
             'last_login',   
         ]
-    extend_schema(request=InputSeralizer , responses=OutPutSerializer)
 
     def post(self , request , *args , **kwargs):
         serializer = self.InputSeralizer(
             request.POST 
         )
-        
+             
         serializer.is_valid(
                 raise_exception=True
             )
@@ -143,4 +145,5 @@ class UpdateProfileViews(APIView):
         return Response(
             data= self.InputSerailizer(instance).data , status=HTTP_200_OK
         )
-        
+
+# registery 

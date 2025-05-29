@@ -48,7 +48,7 @@ class BaseUserAccount(AbstractUser , BaseModel):
 
     phone = PhoneField(
         max_length = 12 ,
-        unique = True ,
+        unique = False ,
         validators = [PhoneValidator]
         )
 

@@ -1,6 +1,6 @@
 import os
 from config.env import env, BASE_DIR
-
+from config.middlewares import LoggerMiddleware
 env.read_env(os.path.join(BASE_DIR, ".env"))
 
 # SECURITY WARNING: keep the secret key used in production secret!
@@ -19,7 +19,7 @@ LOCAL_APPS = [
     # 'neutrino.users.apps.UsersConfig',
     'neutrino.authentication.apps.AuthenticationConfig',
     'neutrino.account.apps.AccountConfig' , 
-
+    'neutrino.otp.apps.OtpConfig' , 
 ]
 
 THIRD_PARTY_APPS = [
@@ -177,3 +177,4 @@ from config.settings.celery import *  # noqa
 from config.settings.swagger import *  # noqa
 #from config.settings.sentry import *  # noqa
 #from config.settings.email_sending import *  # noqa
+from config.settings.logs import * # This is for logs 
