@@ -1,0 +1,96 @@
+from abc import ABC , abstractmethod
+from django.db import models
+from django.utils import timezone
+from .exception import  ( 
+InputModelError , 
+)
+import logging 
+
+'''
+we use method factory  desgin patterns  
+'''
+
+from django.core.mail  import send_mail
+class BaseSendMessage(ABC):
+    # TODO adding all to the redis insded of model 
+    'we save all object in our database redis or rabiit ' 
+    logger = logging.getLogger('django')
+    @classmethod
+    @abstractmethod
+    def send_group_message(self):
+        'send  sms to the our service '
+    def __init__(self , sender , reciver , messages , subject,**kwargs):
+        self.__sender = sender
+        self.__message = messages 
+        self.__subject = subject 
+        self.__reciver = reciver
+
+    @abstractmethod
+    def send_message(self): # derakht 
+        'send the message here'
+        # after workstarion yo have to save in database .
+    @property
+    def message(self):
+        # do that validation
+        return self.__message
+    
+        # ... 
+    @property
+    def reciver(self): 
+        # do that validation
+        return self.__reciver.strip()
+    @property
+    def sender(self):
+        # do that validation
+        return self.__sender.strip()
+    @property
+    def subject(self):
+        # do that validation
+        return self.__subject.strip() 
+    
+# add validation 
+# here i use django mail 
+class EmailSendDjangoManager(BaseSendMessage): 
+    log_mail  = None
+    def __init__(self, sender, reciver, messages, **kwargs):
+        self.mail_messsage = (
+            self.subject ,
+            self.message  , 
+            self.sender , 
+           [self.reciver] ,  
+
+        )
+        assert  self.log_mail  , 'Log_mail  model must be set .. for loggin model .'
+        super().__init__(sender, reciver, messages, **kwargs)
+
+
+    def mail_model_log(self)->models.Model:
+        if isinstance(self.log_mail , models.Model):
+            raise  InputModelError("log mail must have intancce from model")
+        else : 
+            return self.log_mail
+
+
+    def send_message(self):
+        send_mail(*self.message , fail_silently=False)
+        self.log_mail()
+        return super().send_message()
+    
+    def log_progress(self):
+        self.mail_model_log().object.create(
+            subject = self.subject , 
+            message = self.message , 
+            sender = self.sender  ,
+            reciver = self.reciver
+        )
+
+        self.logger.info(f'The email from {self.reciver} \n {self.sender} -- {timezone.now()} ')
+
+
+
+
+
+#####
+
+def send_sms(self , number):
+    request
