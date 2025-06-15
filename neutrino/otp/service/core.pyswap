@@ -1,0 +1,199 @@
+from abc import ABC , abstractmethod
+from django.db import models
+from django.utils import timezone
+from .exception import  ( 
+InputModelError , 
+)
+import logging 
+
+'''
+we use method factory  desgin patterns  
+'''
+
+from django.core.mail  import send_mail
+class BaseSendMessage(ABC):
+    # TODO adding all to the redis insded of model 
+    'we save all object in our database redis or rabiit ' 
+    logger = logging.getLogger('django')
+    @classmethod
+    @abstractmethod
+    def send_group_message(self):
+        'send  sms to the our service '
+    def __init__(self , sender , reciver , messages , subject,**kwargs):
+        self.__sender = sender
+        self.__message = messages 
+        self.__subject = subject 
+        self.__reciver = reciver
+
+    @abstractmethod
+    def send_message(self): # derakht 
+        'send the message here'
+        # after workstarion yo have to save in database .
+    @property
+    def message(self):
+        # do that validation
+        return self.__message
+    
+        # ... 
+    @property
+    def reciver(self): 
+        # do that validation
+        return self.__reciver.strip()
+    @property
+    def sender(self):
+        # do that validation
+        return self.__sender.strip()
+    @property
+    def subject(self):
+        # do that validation
+        return self.__subject.strip() 
+    
+# add validation 
+# here i use django mail 
+class EmailSendDjangoManager(BaseSendMessage): 
+    log_mail  = None
+    def __init__(self, sender, reciver, messages, **kwargs):
+        self.mail_messsage = (
+            self.subject ,
+            self.message  , 
+            self.sender , 
+           [self.reciver] ,  
+
+        )
+        assert  self.log_mail  , 'Log_mail  model must be set .. for loggin model .'
+        super().__init__(sender, reciver, messages, **kwargs)
+
+
+    def mail_model_log(self)->models.Model:
+        if isinstance(self.log_mail , models.Model):
+            raise  InputModelError("log mail must have intancce from model")
+        else : 
+            return self.log_mail
+
+
+    def send_message(self):
+        send_mail(*self.message , fail_silently=False)
+        self.log_mail()
+        return super().send_message()
+    
+    def log_progress(self):
+        self.mail_model_log().object.create(
+            subject = self.subject , 
+            message = self.message , 
+            sender = self.sender  ,
+            reciver = self.reciver
+        )
+
+        self.logger.info(f'The email from {self.reciver} \n {self.sender} -- {timezone.now()} ')
+
+
+
+
+
+#####
+
+def send_sms(self , number):
+    request
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+class BaseRead(ABC): 
+    def __init__(self , file ):
+        self.file_name = file 
+
+        # logic 
+    @abstractmethod
+    def read_file_2_list(self,)->list: # 
+        self.list = convet(self.file_name) # logic 
+
+class WordRead(BaseRead):
+    def read_file_2_list(self):
+        self.list = nother_convert_logic(self.name)
+        logger.logging('return list from word')
+        return self.list
+
+class ExcellRead(BaseRead):
+    def __init__(self , sheet=... , *args):
+    self.sheet , super.__init__(self, *args)
+    def read_file_2_list(self, where = ... , will = ... ):
+        self.list = excell_convert_logic(sheet , where  , will)
+        self.logging.info('that excell list was converted')
+        # excell Logic 
+
+
+
+
+### now Factroy mehtod 
+
+class BaseFactroy():
+    def __init__(self, file_name, which_pc = 'parsa@Pc'):
+        # adding parsa to tthe data base 
+
+
+        self.interface = self.BaseRead(file_name)
+        self.add_to_the_database(which_pc . "from __class__.name") # a nother logic dont not 
+    def BaseReadFactroy(self):
+        return self.interface
+
+
+
+
+
+class Wordfactory():
+    def __init__(self, file_name, which_pc = 'parsa@Pc'):
+        # adding parsa to tthe data base 
+        self.interface = self.WordRead(file_name)
+        super.__init__()        
+    def WordFactroy(self):
+        return self.interface
+
+
+
+    def list_2_d(self):
+        service = self.Wordfactory()
+        return service.list_2_d()
+
+class Excell_factory():
+    def __init__(self, file_name, which_pc = 'parsa@Pc' , sheet , where_to_where= [0 , 20]):
+        # adding parsa to tthe data base 
+        self.interface = self.ExcellRead(file_name)
+        super.__init__()        
+        self.where_to_where = where_to_where
+    def ExcellFactroy(self):
+        return self.interface
+
+
+
+    def list_2_d(self):
+        service = self.ExcellFactroy()
+        return service.list_2_d(self.where_to_where)
