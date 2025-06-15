@@ -94,3 +94,106 @@ class EmailSendDjangoManager(BaseSendMessage):
 
 def send_sms(self , number):
     request
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+class BaseRead(ABC): 
+    def __init__(self , file ):
+        self.file_name = file 
+
+        # logic 
+    @abstractmethod
+    def read_file_2_list(self,)->list: # 
+        self.list = convet(self.file_name) # logic 
+
+class WordRead(BaseRead):
+    def read_file_2_list(self):
+        self.list = nother_convert_logic(self.name)
+        logger.logging('return list from word')
+        return self.list
+
+class ExcellRead(BaseRead):
+    def __init__(self , sheet=... , *args):
+    self.sheet , super.__init__(self, *args)
+    def read_file_2_list(self, where = ... , will = ... ):
+        self.list = excell_convert_logic(sheet , where  , will)
+        self.logging.info('that excell list was converted')
+        # excell Logic 
+
+
+
+
+### now Factroy mehtod 
+
+class BaseFactroy():
+    def __init__(self, file_name, which_pc = 'parsa@Pc'):
+        # adding parsa to tthe data base 
+
+
+        self.interface = self.BaseRead(file_name)
+        self.add_to_the_database(which_pc . "from __class__.name") # a nother logic dont not 
+    def BaseReadFactroy(self):
+        return self.interface
+
+
+
+
+
+class Wordfactory():
+    def __init__(self, file_name, which_pc = 'parsa@Pc'):
+        # adding parsa to tthe data base 
+        self.interface = self.WordRead(file_name)
+        super.__init__()        
+    def WordFactroy(self):
+        return self.interface
+
+
+
+    def list_2_d(self):
+        service = self.Wordfactory()
+        return service.list_2_d()
+
+class Excell_factory():
+    def __init__(self, file_name, which_pc = 'parsa@Pc' , sheet , where_to_where= [0 , 20]):
+        # adding parsa to tthe data base 
+        self.interface = self.ExcellRead(file_name)
+        super.__init__()        
+        self.where_to_where = where_to_where
+    def ExcellFactroy(self):
+        return self.interface
+
+
+
+    def list_2_d(self):
+        service = self.ExcellFactroy()
+        return service.list_2_d(self.where_to_where)

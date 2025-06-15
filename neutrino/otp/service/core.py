@@ -8,6 +8,7 @@ import logging
 
 
 class InputModelError(Exception):...
+
 class BaseSendMessage(ABC): # TODO have altration from asyncio  
     logger = ...
     log_model = ...
@@ -16,11 +17,10 @@ class BaseSendMessage(ABC): # TODO have altration from asyncio
         self._message = message
         self._subject = subject
         self._receiver = receiver
-        self._init_logger = self._validate_log_model()
+        self._init_logger = self._validate_logger()
+        super().__init__(**kwargs) 
 
-        super().__init__(**kwargs)
-
-    def _log_progress(self)->models.Model:
+    def _log_progress(self)->None:
         log_model = self._validate_log_model()
         log_model.objects.create(
             subject=self.subject,
@@ -28,14 +28,16 @@ class BaseSendMessage(ABC): # TODO have altration from asyncio
             sender=self.sender,
             receiver=self.receiver
         )
-    
+
         self._init_logger.info(f'{str(self)} sent from {self.sender} to {self.receiver} at {timezone.now()}')
-    def _validate_log_model(self):
+    
+    
+    def _validate_log_model(self)->model.Model | None:
         if not self.log_model or not issubclass(self.log_model, models.Model):
             raise InputModelError("log_model must be a Django Model subclass")
         return self.log_model
 
-    def _validate_logger(self):
+    def _validate_logger(self)->logging.Logger | None:
         if not self.logger or not issubclass(self.logger , logging.Logger) : 
             raise InputModelError("logger attr must be a Logger subcclass")
         return self.logger
@@ -68,7 +70,7 @@ class BaseSendMessage(ABC): # TODO have altration from asyncio
 
 class DjangoEmailService(BaseSendMessage):
     log_model = None  # Should be set to a Django model for logging
-    
+    send_mail_structre = send_mail # Note : this is from django 
     def __init__(self, sender, receiver, message, subject, **kwargs):
         super().__init__(sender, receiver, message, subject, **kwargs)
         self.email_data = (
@@ -83,13 +85,19 @@ class DjangoEmailService(BaseSendMessage):
 
         try:
             self._init_logger.info("Email send be sucssesed from server ")
-            send_mail(*self.email_data, fail_silently=False)
+            self.send_mail(*self.email_data, fail_silently=False) # properrtu
             self._log_progress()
             return True
         except Exception as e:
             self._init_logger.error(f'Failed to send email from server: {str(e)}')
             return False
         
+
+    def send_mail(self , *args,**kwargs):
+        self.send_mail_structre(*args,**kwargs)
+
+
+
 class SmsDjangoService(BaseSendMessage): # TODO must be use internull asyncio here
     '''
     >>> from ascynio 
@@ -99,9 +107,6 @@ class SmsDjangoService(BaseSendMessage): # TODO must be use internull asyncio he
     
     def __init__(self, sender, receiver, message, subject, **kwargs):
         super().__init__(sender, receiver, message, subject, **kwargs)
-
-    def send_message(self):
-        return super().send_message()
 
 
     def _sms_provider(self):
@@ -122,6 +127,8 @@ class SmsDjangoService(BaseSendMessage): # TODO must be use internull asyncio he
         except Exception as e :
             self._init_logger.error(f'Some Error To sending SMS \n {e}') 
             return False 
+            
+
             
 class FactorySendmessage(ABC):
     '''
@@ -165,10 +172,10 @@ class FactorySendmessage(ABC):
     
 class EmailFactroyMethod(FactorySendmessage):
     def __init__(self ,sender, receiver, message, subject):
-        self._mail_interface = DjangoEmailService(sender, receiver, message, subject)
+        self._interface = DjangoEmailService(sender, receiver, message, subject)
         
     def BackendMessageService(self)->DjangoEmailService:
-        return self._mail_interface()
+        return self._interface
     
     def send_message(self)-> bool: 
         service = self.BackendMessageService()
@@ -182,10 +189,10 @@ class SmsFactroyMethod(FactorySendmessage):
         self._mail_interface = SmsService(sender, receiver, message, subject)
         
     def BackendMessageService(self)->SmsDjangoService:
-        return self._mail_interface()
+        return self._interface
     
     def send_message(self)-> bool: 
         service = self.BackendMessageService()
         status = service.send_message()
         return status
-    
+    # this is factroy mehfot 

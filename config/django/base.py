@@ -1,6 +1,6 @@
 import os
 from config.env import env, BASE_DIR
-from config.middlewares import LoggerMiddleware
+#from config.middlewares import LoggerMiddleware
 env.read_env(os.path.join(BASE_DIR, ".env"))
 
 # SECURITY WARNING: keep the secret key used in production secret!
@@ -45,7 +45,10 @@ INSTALLED_APPS = [
     *THIRD_PARTY_APPS,
     *LOCAL_APPS,
 ]
+LOCAL_MIDDLEWARE = [
+  'config.middleware.LoggerMiddleware', 
 
+]
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'corsheaders.middleware.CorsMiddleware',
@@ -56,6 +59,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    *LOCAL_MIDDLEWARE , 
 ]
 
 ROOT_URLCONF = 'config.urls'

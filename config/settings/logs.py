@@ -1,3 +1,4 @@
+
 LOGGING = {
        'version': 1,
 
@@ -24,7 +25,7 @@ LOGGING = {
            'file_otp_logs': {
                'level': 'DEBUG',
                'class': 'logging.FileHandler',
-               'filename': 'logs/django.log',
+               'filename': 'logs/otp.log',
                'formatter': 'verbose'
            },
            
