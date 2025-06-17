@@ -61,6 +61,7 @@ class BaseUserAccount(AbstractUser , BaseModel):
         'self' , on_delete=models.CASCADE , related_name = 'FOLLOWER' , null=True , blank=False
     )
 
+   
     def __str__(self):
         return f'{self.username}'
 
@@ -76,7 +77,6 @@ class BaseUserAccount(AbstractUser , BaseModel):
     read_receipts = models.BooleanField(
         default=True,
     )
-
 
 class UserSettings(BaseModel):
     class PrivacyChoices(models.TextChoices):

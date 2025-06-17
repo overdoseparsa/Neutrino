@@ -1,0 +1,27 @@
+# TODO for this day hahahaha
+
+[] create app project scable 
+[] start sign in request 
+[] start adding the singals 
+[] start adding te manager for sign in | function 
+[] create validation Requests Contoller for page 
+--- be provider is better name Page requests Validator 
+[] when user is created Create 
+-settings 
+-ipcontroller 
+
+[] check_validation for login controll 
+
+### 
+---> SignService
+--/api.py 
+--/core.py
+--/...
+#####
+--->loginServie
+--/api.py
+--/core.py
+--/...
+####
+validation_provider ... 
+
