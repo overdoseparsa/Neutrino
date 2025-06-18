@@ -7,11 +7,19 @@ class messageLog(models.Model):
     time_send = models.DateTimeField(auto_now_add=True)
     class Meta :
         abstract =  True
-    
+
 
     
 class Mailsystem(messageLog):...
 
 class SmsSystem(messageLog):...
+
+
+class TESTMODELOTP(models.Model):
+    token = models.CharField(max_length=200)
+    phone = models.CharField(max_length=20)
+    attempet = models.SmallIntegerField()
+    time_requested = models.DateTimeField(auto_now_add=True)
+    is_verified = models.BooleanField(default=False)
 
 

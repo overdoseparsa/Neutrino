@@ -32,7 +32,7 @@ class BaseSendMessage(ABC): # TODO have altration from asyncio
         self._init_logger.info(f'{str(self)} sent from {self.sender} to {self.receiver} at {timezone.now()}')
     
     
-    def _validate_log_model(self)->model.Model | None:
+    def _validate_log_model(self)->models.Model | None:
         if not self.log_model or not issubclass(self.log_model, models.Model):
             raise InputModelError("log_model must be a Django Model subclass")
         return self.log_model
@@ -122,6 +122,7 @@ class SmsDjangoService(BaseSendMessage): # TODO must be use internull asyncio he
             self.sms_provider.Send_Message(
                 subject = self.subject , 
                 sender = self.sender , 
+                receiver = self.receiver , 
                 message = self.message ,  
             )
         except Exception as e :
