@@ -2,7 +2,7 @@ from kavenegar import KavenegarAPI
 
 
 class KavenegarProvider(KavenegarAPI):
-    def send_message(self , subject  ,sender ,  receiver  , , message):
+    def Send_Message(self , subject  ,sender ,  receiver  ,  message):
         params = {'receptor':receiver , 
                 'sender':sender , 
                 'message':f'{subject}' +  f'\n {message}' 
@@ -14,8 +14,8 @@ class KavenegarProvider(KavenegarAPI):
 
 
 class TestProvider:
-    def send_message(self , subject  , reviver  ,sender , message):
-        params ={'receptor':reviver , 
+    def Send_Message(self , subject  , receiver  ,sender , message):
+        params ={'receptor':receiver , 
                  'sender':sender , 
                  'message':f'{subject}' +  f'\n {message}' 
                 }

@@ -59,8 +59,12 @@ def send_otp_sms(phone_number)->str:
     #         apikey=env('KAVENEGAR_TOKEN') 
     #     )
     provider_object = TestProvider()
+    from neutrino.otp.models import Mailsystem , SmsSystem
+    import logging
     service = SmsFactroyMethod(
             provider= provider_object , 
+            Log_model=SmsSystem ,
+            Logger_factory=logging.getLogger('SmsOtp') , 
             sender = '09932667257' , # sender from Parsa
             receiver=phone_number ,
             subject='This is otp number' , 
@@ -72,16 +76,21 @@ def send_otp_sms(phone_number)->str:
         # phone token aeempet time code 
         
     TESTMODELOTP.objects.create(
-            token = token_ , 
+            token = token() , 
             phone = phone_number , 
             attempet = total_attempet , # Settings defualt attrempet
-            time_expired = timezone.now() 
-
-
-        ) # save 
+            code = token_
+        
+        ) # save  
     return token_ 
 
 
 
+def main():
+    print(
+        send_otp_sms('09932667257') 
+    )
 
 
+if __name__ == '__main__':main()
+# sms OTP is up 

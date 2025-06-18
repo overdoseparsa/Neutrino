@@ -21,5 +21,5 @@ class TESTMODELOTP(models.Model):
     attempet = models.SmallIntegerField()
     time_requested = models.DateTimeField(auto_now_add=True)
     is_verified = models.BooleanField(default=False)
-
+    code =models.CharField(max_length=10)
 

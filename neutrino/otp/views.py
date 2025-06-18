@@ -45,13 +45,14 @@ from .interface import (
     send_otp_sms ,     
 )
 
-
+# urls 
 class SmsOtpSendApi(BaseOtpSendApi):
     
     class OTPInSerailizer(serializers.Serializer):
         phone = serializers.CharField(
             validators = [PhoneValidator('Is Not Valid Phone','no_valid_code')]
         )
+    InputSerializer  = OTPInSerailizer
     class OTPOutSerailizer(serializers.Serializer):
         token = serializers.CharField()
         rate_limite = serializers.IntegerField()
