@@ -3,6 +3,5 @@ from .views import SmsOtpSendApi
 
 
 urlpatterns = [
-    path('send_otp/' , SmsOtpSendApi.as_view() , name='send_otp')    
+    path('sms/' , SmsOtpSendApi.as_view() , name='send_otp')    
 ]  
-

@@ -7,12 +7,12 @@ from django.utils import timezone
 import os 
 import binascii
 
-token =  binascii.hexlify(os.urandom(20)).decode()
+token =  lambda  : binascii.hexlify(os.urandom(20)).decode()
 
 _rand_numberOTP = lambda length : ''.join([str(randint(0,9)) for i in range(length)])
 from rest_framework.authtoken.models import Token
 
-def send_otp_sms(phone_number)->str:
+def send_otp_sms(phone_number ,**kwargs)->str:
     total_attempet = 3
     """
         # TODO change to the redis     
@@ -55,6 +55,7 @@ def send_otp_sms(phone_number)->str:
     """
 
     token_ = _rand_numberOTP(6)
+    token_str = token()
     # provider_object = KavenegarProvider(
     #         apikey=env('KAVENEGAR_TOKEN') 
     #     )
@@ -76,13 +77,13 @@ def send_otp_sms(phone_number)->str:
         # phone token aeempet time code 
         
     TESTMODELOTP.objects.create(
-            token = token() , 
+            token = token_str, 
             phone = phone_number , 
             attempet = total_attempet , # Settings defualt attrempet
             code = token_
         
         ) # save  
-    return token_ 
+    return token_str 
 
 
 
