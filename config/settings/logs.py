@@ -22,23 +22,34 @@ LOGGING = {
                'class': 'logging.StreamHandler',
                'formatter': 'simple'
            },
-           'file_otp_logs': {
+           'sms_file_otp_logs': {
                'level': 'DEBUG',
                'class': 'logging.FileHandler',
-               'filename': 'logs/otp.log',
+               'filename': 'logs/otp_sms.log',
                'formatter': 'verbose'
            },
-           
+            'mail_file_otp_logs': {
+               'level': 'DEBUG',
+               'class': 'logging.FileHandler',
+               'filename': 'logs/otp_mail.log',
+               'formatter': 'verbose'
+           },
             'middleware_logs_file':{
                 'level':'DEBUG' ,
                 'class': 'logging.FileHandler',
                 'filename': 'logs/middleware.log',
                 'formatter': 'verbose'  ,
             }
+            
        },
        'loggers': {
-           'Otpmail': {
-               'handlers': ['console_otp_logs', 'file_otp_logs'],
+           'Mailotp': {
+               'handlers': ['console_otp_logs', 'mail_file_otp_logs'],
+               'level': 'DEBUG',
+               'propagate': True,
+           },
+            'SmsOtp': {
+               'handlers': ['console_otp_logs', 'sms_file_otp_logs'],
                'level': 'DEBUG',
                'propagate': True,
            },
@@ -47,8 +58,14 @@ LOGGING = {
                'level': 'DEBUG',
                'propagate': True,
            },
-       },
        
+            'SmsSendApilogs':{
+                'handlers':['console_otp_logs'] ,
+                'level':'DEBUG', 
+                'propagate':True} , 
+
+       
+       },
    }
 
 
