@@ -7,6 +7,13 @@ from django.utils import timezone
 import os 
 import binascii
 
+"""
+WE HAVE TO ALTRAION the Otp Inter Face 
+This is for just development Envirement
+
+"""
+
+
 token =  lambda  : binascii.hexlify(os.urandom(20)).decode()
 
 _rand_numberOTP = lambda length : ''.join([str(randint(0,9)) for i in range(length)])
@@ -121,13 +128,13 @@ def verify_otp(token , code)-> TESTMODELOTP | None:
     TODO we shoud have altartion in this alogritm because 
     we must now how impement about expid time 
     '''
-    # try :
-    token_model = TESTMODELOTP.objects.get(
-            token = token
+    try :
+        token_model = TESTMODELOTP.objects.get(
+                token = token
         )
-    print('that token is here', token_model)
-    # except Exception as e :
-    #     raise OtpError(f'invalid token \n \' {e}')
+        print('that token is here', token_model)
+    except Exception as e :
+        raise OtpError(f'invalid token \n \' {e}')
     
 
     save =  lambda : token_model.save()
@@ -153,3 +160,28 @@ def verify_otp(token , code)-> TESTMODELOTP | None:
             save()
             raise CodeOtpnoteMatch('this code is not valid')
             
+
+
+class IsVerifyedOTP: # TODO be factory design pattrens 
+    def __init__(self , token:str):
+        try :
+            self.otp_token_model = TESTMODELOTP.objects.get(
+                        token = token
+                )
+        except Exception as e :
+            raise OtpError(f'invalid token \n \' {e}')
+        
+    def __str__(self):
+        return self.__repr__()
+    
+    def validate(self):
+        assert self.otp_token_model.is_verified , "This token is not verfied"
+        
+        """
+        class RedisOtpOInterFace:
+            ....
+        token = RedisOtpOInterFace()
+        token.is_verifyed()
+        """
+        # TOOD 
+        
