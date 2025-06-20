@@ -23,3 +23,6 @@ class TESTMODELOTP(models.Model):
     is_verified = models.BooleanField(default=False)
     code =models.CharField(max_length=10)
 
+    def __str__(self):
+        return f'{(self.token , self.phone , self.code , self.attempet)}'
+    
