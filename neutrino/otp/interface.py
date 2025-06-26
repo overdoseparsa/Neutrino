@@ -154,15 +154,16 @@ def verify_otp(token , code)-> TESTMODELOTP | None:
             # check the best 
             token_model.is_verified = True 
             save()
-            return token 
+            return {'token':token}
         else:
             token_model.attempet -= 1 
             save()
             raise CodeOtpnoteMatch('this code is not valid')
             
+class BaseVerifyOtp():
+    pass
 
-
-class IsVerifyedOTP: # TODO be factory design pattrens 
+class IsVerifyedOTP(BaseVerifyOtp): # TODO be factory design pattrens 
     def __init__(self , token:str):
         try :
             self.otp_token_model = TESTMODELOTP.objects.get(
@@ -174,14 +175,41 @@ class IsVerifyedOTP: # TODO be factory design pattrens
     def __str__(self):
         return self.__repr__()
     
-    def validate(self):
-        assert self.otp_token_model.is_verified , "This token is not verfied"
+    def validate(self,raise_expection = False):
+        if raise_expection : 
+            assert self.otp_token_model.is_verified , "This token is not verfied"
         
         """
-        class RedisOtpOInterFace:
-            ....
-        token = RedisOtpOInterFace()
-        token.is_verifyed()
+            class RedisOtpOInterFace:
+                ....
+            token = RedisOtpOInterFace()
+            token.is_verifyed()
         """
-        # TOOD 
+            # TOOD 
+        print('validation from verify otp ')
         
+    def get_the_context(self)->dict:
+        # assert hasattr(self , '_remove_token') , 'you must get the context befor use removemhtod token'
+        
+        print('The context is ',  {
+            'phone':self.otp_token_model.phone , 
+            'time':self.otp_token_model.time_requested , 
+        })
+        return {
+            'phone':self.otp_token_model.phone , 
+            'time':self.otp_token_model.time_requested , 
+        }
+    def remove_token(self):
+        """
+        note : if the provider from sns service otp have log info from 
+        serivce off sms sender it dont neer
+        """
+        
+        
+        # assert hasattr(self , '_validate') , "you must to validate otp befor remove token from otp"
+
+        self.otp_token_model.delete()
+        # here We have atration with Otp interface 
+        # TODO we will add the interface for otp 
+
+

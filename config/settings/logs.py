@@ -39,7 +39,27 @@ LOGGING = {
                 'class': 'logging.FileHandler',
                 'filename': 'logs/middleware.log',
                 'formatter': 'verbose'  ,
+            },
+            'SendOtpSmsApi_file':{
+                'level':'DEBUG' ,
+                'class': 'logging.FileHandler',
+                'filename': 'logs/send_sms_otp.log',
+                'formatter': 'verbose'  ,
+            },
+            'Sign_api_logs':{
+                'level':'DEBUG' ,
+                'class': 'logging.FileHandler',
+                'filename': 'logs/Sign_api.log',
+                'formatter': 'verbose'  ,
+            } , 
+            'loggin_api_logs':{
+                'level':'DEBUG' ,
+                'class': 'logging.FileHandler',
+                'filename': 'logs/loggin_api_logs.log',
+                'formatter': 'verbose'  ,
             }
+            
+            
             
        },
        'loggers': {
@@ -60,12 +80,20 @@ LOGGING = {
            },
        
             'SmsSendApilogs':{
-                'handlers':['console_otp_logs'] ,
+                'handlers':['console_otp_logs'  , 'SendOtpSmsApi_file'] ,
                 'level':'DEBUG', 
                 'propagate':True} , 
-
-       
+        
+            'SignApilogs':{
+                'handlers':['Sign_api_logs','console_otp_logs'] ,
+                'level':'DEBUG', 
+                'propagate':True} , 
        },
+            'LogginApilogs':{
+                'handlers':['loggin_api_logs','console_otp_logs'] ,
+                'level':'DEBUG', 
+                'propagate':True} , 
+        
    }
 
 

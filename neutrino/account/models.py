@@ -75,7 +75,7 @@ class BaseUserAccount(AbstractUser , BaseModel):
         abstract = True
 
     read_receipts = models.BooleanField(
-        default=True,
+        default=False,
     )
 
 class UserSettings(BaseModel):
@@ -109,11 +109,14 @@ class UserSettings(BaseModel):
         default=PrivacyChoices.FRIENDS,
     )
 
-    last_seen_profiles_day = models.ForeignKey(
-        'DefaultUser' ,
-        on_delete=models.CASCADE ,
-        related_name ='SeenProfile' ,
-        related_query_name="seenprofiles"
+    last_seen_profiles_day = models.ManyToManyField(
+        'DefaultUser',
+        # on_delete=models.CASCADE ,
+        # pr ='SeenProfile' ,
+        # related_query_name="seenprofiles" , 
+        # null= True , 
+        # blank  = False , 
+        
         )
     # تنظیمات نوتیفیکیشن
     message_notifications = models.CharField(
@@ -178,7 +181,7 @@ class UserNetworkProfile(BaseModel):
                 on_delete=models.CASCADE, related_name='network_profile')
 
     # اطلاعات IP
-    ipv4_address = models.GenericIPAddressField(protocol='IPv4', null=True, blank=True)
+    ipv4_address = models.GenericIPAddressField(protocol='IPv4', null=False, blank=False)
     ipv6_address = models.GenericIPAddressField(protocol='IPv6', null=True, blank=True)
     last_known_ip = models.GenericIPAddressField(protocol='both', null=True, blank=True)
 
@@ -206,7 +209,7 @@ class UserNetworkProfile(BaseModel):
     user_agent = models.TextField(blank=True, null=True)
     device_type = models.CharField(max_length=50, blank=True, null=True)
 
-    json_convert_data = models.JSONField(null=True , blank=False)
+    # json_convert_data = models.JSONField(null=True , blank=False)
 
 
 class Profile(BaseModel): # can `t update profile

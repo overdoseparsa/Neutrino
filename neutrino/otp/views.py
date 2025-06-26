@@ -61,7 +61,7 @@ class BaseOtpApi(APIView):
         outputserializer = self.get_output_serialzer(data = response)
         outputserializer.is_valid()
 
-        return Response(outputserializer.data , status=HTTP_201_CREATED)
+        return Response(data=outputserializer.data , status=HTTP_201_CREATED)
         
 from .interface import (
     send_otp_sms ,   verify_otp  
@@ -123,5 +123,4 @@ class PhoneVerifyApi(BaseOtpApi):
         )
 
 
-    
     

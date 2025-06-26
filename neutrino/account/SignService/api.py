@@ -17,7 +17,6 @@ from django.urls import path
 USER = get_user_model()
 print(USER , 'model is' )
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
-
 class BaseSignAccountApi(
     APIView
 ):
