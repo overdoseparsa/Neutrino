@@ -16,7 +16,34 @@ from django.urls import path
 
 USER = get_user_model()
 print(USER , 'model is' )
+
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+
+class SignOutputSerailizer(serializers.ModelSerializer):
+    class Meta :
+        model = get_user_model()
+        fields = '__all__'
+        # for JWT 
+
+
+        """
+        note we can use the a custom auth token 
+        from this mehtod for be scabale in authentication 
+        bur is rather to use jwt inthis seriailzer 
+        """
+        # validation 
+    def add_jwt_context(self , username , password)->None:
+            self.username , self.password = username , password
+        
+    def jwt_token(self , user): 
+            jwt_intance = TokenObtainPairSerializer(data = {'username':self.username , 'password':self.password})
+            jwt_intance.is_valid()
+            print('the validated data is ' , jwt_intance.validated_data )
+            return jwt_intance.validated_data
+
+             
+    token = serializers.SerializerMethodField('jwt_token')  
+        
 class BaseSignAccountApi(
     APIView
 ):
@@ -39,31 +66,7 @@ class BaseSignAccountApi(
     >>> class opt(Baseapi):
     >>> class sign(Baseapi): 
     """  
-    class SignOutputSerailizer(serializers.ModelSerializer):
-        class Meta :
-            model = get_user_model()
-            fields = '__all__'
-        # for JWT 
 
-
-        """
-        note we can use the a custom auth token 
-        from this mehtod for be scabale in authentication 
-        bur is rather to use jwt inthis seriailzer 
-        """
-        # validation 
-        def add_jwt_context(self , username , password)->None:
-            self.username , self.password = username , password
-        
-        def jwt_token(self , user): 
-            jwt_intance = TokenObtainPairSerializer(data = {'username':self.username , 'password':self.password})
-            jwt_intance.is_valid()
-            print('the validated data is ' , jwt_intance.validated_data )
-            return jwt_intance.validated_data
-
-             
-        token = serializers.SerializerMethodField('jwt_token')  
-        
 
     class SignInputSerializer(serializers.Serializer):        
         token = serializers.CharField()

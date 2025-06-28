@@ -5,18 +5,21 @@ from django.contrib.auth.models import AbstractUser
 from neutrino.otp.interface import BaseVerifyOtp, IsVerifyedOTP
 from abc import ABC , abstractmethod
 from neutrino.core.provider import RequestsLimitationProvider , BaseRequestValidator
-from neutrino.account.auth_sign.service import user
 from django.contrib.auth import get_user_model
 import logging
 from config.django.test import PASSWORD_HASHERS
-
+from django.db.transaction import atomic
+from django.core.exceptions import ObjectDoesNotExist , MultipleObjectsReturned
 USER_ = get_user_model()
 
 class BaseFactoyGetuser(ABC):
 
     def __init__(self , **kwargs):
+        
         assert kwargs.get('query')  , "you have to add quey site "
         self.query = kwargs.get('query')
+
+        print('the query is ' , self.query)
     @abstractmethod
     def get_user_context(self)->AbstractUser:
         """
@@ -36,16 +39,27 @@ class BaseFactoyGetuser(ABC):
 
 class SimpleOrmFactroy(BaseFactoyGetuser):
     def get_user_context(self)->AbstractUser:
-        return USER_.objects.get(**{self.query})
+        from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
+
+def get_user_context(self) -> AbstractUser:
+    try:
+        return USER_.objects.get(**self.query)
+    except ObjectDoesNotExist:
+        raise ValueError(f"No user found with query: {self.query}")
+    except MultipleObjectsReturned:
+        raise ValueError(f"Multiple users found with query: {self.query}")
 
 class  HashFinedFactory(BaseFactoyGetuser):
     # for pyload email for phone number
     # using hash in database
     def get_user_context(self)->AbstractUser:
+        """
+        if i wnat to hashing from database to find user         
+        """
         pass  # TODO adding the hash
 
 
-class BaseOtpLoginService(ABC): # abstact
+class BaseOtpLoginService(ABC): # open / close principle  
     """
     why is use duplicate code here
     and i dont specify abstract
@@ -81,7 +95,7 @@ class BaseOtpLoginService(ABC): # abstact
         self.cli_interface.validate(raise_expection=True) # error
         # after validation remove otp
         self.context_data = self.cli_interface.get_the_context()
-        self.cli_interface.remove_token() # if token is exits
+        #self.cli_interface.remove_token() # if token is exits
 
     def run_validation(self):
         self.run_validation_otp()
@@ -93,12 +107,18 @@ class BaseOtpLoginService(ABC): # abstact
         assert issubclass(self.user_interface_factory , BaseFactoyGetuser) , "User factory interface must be subclass from  BaseFactoryGetUser"
         return self.user_interface_factory
 
-    @override
-    def handel_user(self)->None: # factroy
+    
+    # def handel_user(self)->None: # factroy
 
+
+    #     _user_factory = self.get_user_factory(
+    #     )  #INIT must
+    @abstractmethod  
+    def handel_user(self) -> None: #
         """
-        if i want
-        i can just return user
+        Hint : i can just override in my subclasss customxze Otplogggin 
+        >>> self.user = MYLogic()
+
         and dont use the factory_handell
         >>> class MyOtpLoggin(BaseOtpLoginService):
             ... def handel_user(self)->AbstractUser:
@@ -112,31 +132,31 @@ class BaseOtpLoginService(ABC): # abstact
             ```
 
         """
-
-        _user_factory = get_user_factory(
-        )  #INIT must
-
-class PhoneOtpLoggin(BaseOtpLoginService):
-
-    def handel_user(self) -> None: #
-        self.context_data.pop('time')
+        self.context_data.pop('time' , None)
+        
         self.__user_factory = self.get_user_factory(
             query = self.context_data
         )
+         
         self.user = self.__user_factory.get_user_context()
-        self.Loggin_Logger_.info(f'user is loggin with {self.context_data} from phone')
+    
+        self.Loggin_Logger_.info(f'user is loggin with {self.context_data} from {self.__class__.__name__}')
 
-
-class EmailOtpLoggin(BaseOtpLoginService):
-    def handel_user(self) -> None: #
-        self.context_data.pop('time')
-        self.__user_factory = self.get_user_factory(
-            query = self.context_data
-        )
-        self.user = self.__user_factory.get_user_context()
-        self.Loggin_Logger_.info(f'user is loggin with {self.context_data} from phone')
 
     @property
-    def retrive_user(self)->AbstractUser:
-        assert hasattr(self , 'user') , 'handel User must be called' ,
+    def retricve_user(self)->AbstractUser:
+        assert hasattr(self , 'user') , 'Yo mut cal the hendler_user befor retrive user'
         return self.user
+
+
+class PhoneOtpLoggin(BaseOtpLoginService):
+    user_interface_factory = SimpleOrmFactroy
+    @atomic
+    def handel_user(self):
+        return super().handel_user()
+
+
+class EmailOtpLoggin(BaseOtpLoginService): # TODO 
+    user_interface_factory = SimpleOrmFactroy
+    
+
