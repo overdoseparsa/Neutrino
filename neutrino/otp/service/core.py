@@ -32,20 +32,20 @@ class BaseSendMessage(ABC): # TODO have altration from asyncio
         self._init_logger.info(f'{str(self)} sent from {self.sender} to {self.receiver} at {timezone.now()}')
     
     
-    def _validate_log_model(self)->model.Model | None:
+    def _validate_log_model(self)->models.Model | None:
         if not self.log_model or not issubclass(self.log_model, models.Model):
             raise InputModelError("log_model must be a Django Model subclass")
         return self.log_model
 
     def _validate_logger(self)->logging.Logger | None:
-        if not self.logger or not issubclass(self.logger , logging.Logger) : 
+        if not self.logger or not isinstance(self.logger , logging.Logger) : 
             raise InputModelError("logger attr must be a Logger subcclass")
         return self.logger
-    @classmethod
-    @abstractmethod
-    def send_group_message(cls):
-        """Send message to a group of recipients"""
-        pass
+    # @classmethod
+    # @abstractmethod
+    # def send_group_message(cls):
+    #     """Send message to a group of recipients"""
+    #     pass
 
     @abstractmethod
     def send_message(self):
@@ -122,6 +122,7 @@ class SmsDjangoService(BaseSendMessage): # TODO must be use internull asyncio he
             self.sms_provider.Send_Message(
                 subject = self.subject , 
                 sender = self.sender , 
+                receiver = self.receiver , 
                 message = self.message ,  
             )
         except Exception as e :
@@ -170,7 +171,7 @@ class FactorySendmessage(ABC):
         ''' Factory Method  '''
         return self._interface 
     
-class EmailFactroyMethod(FactorySendmessage):
+class EmailFactroyMethod(FactorySendmessage): # TODO add provicer for email sending 
     def __init__(self ,sender, receiver, message, subject):
         self._interface = DjangoEmailService(sender, receiver, message, subject)
         
@@ -181,12 +182,14 @@ class EmailFactroyMethod(FactorySendmessage):
         service = self.BackendMessageService()
         status = service.send_message()
         return status
-    
 class SmsFactroyMethod(FactorySendmessage):
-    def __init__(self ,provider ,sender, receiver, message, subject):
+    def __init__(self ,provider , Log_model , Logger_factory ,  sender, receiver, message, subject):
         class SmsService(SmsDjangoService):
             sms_provider = provider
-        self._mail_interface = SmsService(sender, receiver, message, subject)
+            log_model = Log_model
+            logger = Logger_factory
+        
+        self._interface = SmsService(sender, receiver, message, subject)
         
     def BackendMessageService(self)->SmsDjangoService:
         return self._interface
@@ -195,4 +198,4 @@ class SmsFactroyMethod(FactorySendmessage):
         service = self.BackendMessageService()
         status = service.send_message()
         return status
-    # this is factroy mehfot 
+    # this is factroy mehtod 

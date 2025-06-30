@@ -16,7 +16,7 @@ ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=['*'])
 LOCAL_APPS = [
     'neutrino.core.apps.CoreConfig',
     'neutrino.common.apps.CommonConfig',
-    # 'neutrino.users.apps.UsersConfig',
+    #'neutrino.users.apps.UsersConfig',
     'neutrino.authentication.apps.AuthenticationConfig',
     'neutrino.account.apps.AccountConfig' , 
     'neutrino.otp.apps.OtpConfig' , 
@@ -150,7 +150,7 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 REST_FRAMEWORK = {
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
     'EXCEPTION_HANDLER': 'neutrino.api.exception_handlers.drf_default_with_modifications_exception_handler',
-    # 'EXCEPTION_HANDLER': 'neutrino.api.exception_handlers.hacksoft_proposed_exception_handler',
+    'EXCEPTION_HANDLER': 'neutrino.api.exception_handlers.hacksoft_proposed_exception_handler',
     'DEFAULT_FILTER_BACKENDS': (
         'django_filters.rest_framework.DjangoFilterBackend',
     ),

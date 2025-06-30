@@ -1,11 +1,19 @@
+class BaseRequestValidator():
+    def __init__(self , request):
+        print('this is from requst limitation')
+
+
+class RequestsLimitationProvider(BaseRequestValidator):
+    def __init__(self, request):
+        super().__init__(request)
+
+
+
 from django.contrib.auth import get_user_model
 from django.http import HttpRequest
 from django.utils import timezone
 import datetime
-from .utils import is_time_difference_less
-from .expections import (
-    TimeSessionExpection , 
-)
+
 user = get_user_model()
 
 
@@ -18,10 +26,10 @@ def Create_user(data):
 
 
 # this is base Create Data
-def _check_validation_time_session(time_block_utils):
-    return  is_time_difference_less(time_block_utils , timezone.now() , datetime.timedelta(hours=3)  )
+# def _check_validation_time_session(time_block_utils):
+#     return  is_time_difference_less(time_block_utils , timezone.now() , datetime.timedelta(hours=3)  )
     
-class UserCreateBase:
+class UserCreateBase: # rate limite 
     'logic may be scable but is is the base simple logic'
     # redis 
     def __init__(self , data , request:HttpRequest , **kwargs) ->None:
@@ -45,15 +53,15 @@ class UserCreateBase:
                 }
 
         
-        else : 
-            if self._request.session['pre_login_tracking']['is_prime_block']:
-                if _check_validation_time_session(self._request.session['pre_login_tracking']['is_prime_block']):
-                    raise TimeSessionExpection('That attemped from This session time is not expired \' try later')  
-                else : 
-                    self._request.session['pre_login_tracking']['is_prime_block'] = False
-                    self._request.session['pre_login_tracking']['time_block_utils'] = None                                              
-            else :
-                self.attempt = self._request.session['pre_login_tracking']
+        # else : 
+        #     if self._request.session['pre_login_tracking']['is_prime_block']:
+        #         if _check_validation_time_session(self._request.session['pre_login_tracking']['is_prime_block']):
+        #             raise TimeSessionExpection('That attemped from This session time is not expired \' try later')  
+        #         else : 
+        #             self._request.session['pre_login_tracking']['is_prime_block'] = False
+        #             self._request.session['pre_login_tracking']['time_block_utils'] = None                                              
+        #     else :
+        #         self.attempt = self._request.session['pre_login_tracking']
 
 
 

@@ -22,3 +22,29 @@ def test_query_param():
     ))
     print('ending testing  Regex')
 #test_query_param()
+from django.test import TestCase
+from unittest.mock import patch, MagicMock
+from neutrino.account.LogginService.selector import PhoneOtpLoggin, USER_
+
+class PhoneOtpLogginTest(TestCase):
+    def setUp(self):
+        self.user = USER_.objects.create(phone="09130000000", username="testuser")
+        self.fake_request = MagicMock()
+        self.token = "123456"
+
+    @patch("neutrino.account.LogginService.selector.IsVerifyedOTP")
+    @patch("neutrino.account.LogginService.selector.RequestsLimitationProvider")
+    def test_handle_user_success(self, mock_request_limiter, mock_otp_validator):
+        # پیکربندی mock برای OTP
+        mock_validator_instance = mock_otp_validator.return_value
+        mock_validator_instance.validate.return_value = None
+        mock_validator_instance.get_the_context.return_value = {'phone': '09130000000'}
+
+        # اجرای کلاس اصلی
+        login_service = PhoneOtpLoggin(token=self.token, request=self.fake_request)
+        login_service.handel_user()
+
+        user = login_service.retricve_user()
+
+        self.assertEqual(user.phone, self.user.phone)
+        self.assertEqual(user.username, self.user.username)
