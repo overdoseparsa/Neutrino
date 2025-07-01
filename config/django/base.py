@@ -20,6 +20,7 @@ LOCAL_APPS = [
     'neutrino.authentication.apps.AuthenticationConfig',
     'neutrino.account.apps.AccountConfig' , 
     'neutrino.otp.apps.OtpConfig' , 
+    'neutrino.post.apps.Postconfig' , 
 ]
 
 THIRD_PARTY_APPS = [
