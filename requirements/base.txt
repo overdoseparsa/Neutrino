@@ -1,5 +1,5 @@
 Django
-django-environ==0.9.0
+django-environ
 psycopg2-binary
 djangorestframework
 
