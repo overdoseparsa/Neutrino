@@ -57,8 +57,20 @@ LOGGING = {
                 'class': 'logging.FileHandler',
                 'filename': 'logs/loggin_api_logs.log',
                 'formatter': 'verbose'  ,
-            }
+            }  , 
+            'Post_create_api':{
+                'level':'DEBUG' ,
+                'class': 'logging.FileHandler',
+                'filename': 'logs/post_save_api.log',
+                'formatter': 'verbose'  ,
+            } , 
             
+            'post_update_api':{
+                'level':'DEBUG' ,
+                'class': 'logging.FileHandler',
+                'filename': 'logs/post_update_api.log',
+                'formatter': 'verbose'  ,
+            }
             
             
        },
@@ -92,8 +104,20 @@ LOGGING = {
             'LogginApilogs':{
                 'handlers':['loggin_api_logs','console_otp_logs'] ,
                 'level':'DEBUG', 
-                'propagate':True} , 
+                'propagate':True
+                } , 
         
+            'Post_create_service':{
+                'handlers':['Post_create_api','console_otp_logs'] ,
+                'level':'DEBUG', 
+                'propagate':True
+            } , 
+                   
+            'Post_update_service':{
+                'handlers':['Post_update_api','console_otp_logs'] ,
+                'level':'DEBUG', 
+                'propagate':True
+            }
    }
 
 

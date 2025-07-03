@@ -16,4 +16,6 @@ urlpatterns = [
     path('auth/' , include(('neutrino.authentication.urls') , 'auths'))  , # TODO will change
     path('account/' , include(('neutrino.account.urls') , 'account')) , 
     path('otp/' , include('neutrino.otp.urls')) , 
+    path('post/' , include('neutrino.post.urls')) , 
+
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

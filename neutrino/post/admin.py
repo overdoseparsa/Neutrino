@@ -1,3 +1,5 @@
 from django.contrib import admin
-
-# Register your models here.
+from .models import  Post , Comment , Conection 
+admin.site.register(
+    (Post , Comment , Conection)
+)
