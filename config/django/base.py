@@ -16,7 +16,6 @@ ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=['*'])
 LOCAL_APPS = [
     'neutrino.core.apps.CoreConfig',
     'neutrino.common.apps.CommonConfig',
-    #'neutrino.users.apps.UsersConfig',
     'neutrino.authentication.apps.AuthenticationConfig',
     'neutrino.account.apps.AccountConfig' , 
     'neutrino.otp.apps.OtpConfig' , 
