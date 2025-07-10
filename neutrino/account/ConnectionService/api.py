@@ -69,3 +69,22 @@ from django.urls import path
 PAGE_DETAILS_API = path(
     'Details/<str:username>/' , PageDetailsApi.as_view() , name='account_details'
 )
+
+
+
+from rest_framework.decorators import api_view, throttle_classes , authentication_classes 
+from rest_framework.throttling import UserRateThrottle 
+
+
+
+@api_view(http_method_names=['POST']) # send username 
+def Subscribe_user(request:Request)->Response:
+    pass
+
+
+
+
+
+@api_view(http_method_names=['POST']) # send username 
+def UnSubscribe_user(request:Request)->Response:
+    pass

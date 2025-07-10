@@ -4,7 +4,7 @@ from django.conf import settings
 User = settings.AUTH_USER_MODEL
 
 class Post(BaseModel):
-    title = models.CharField(max_length=150 , )
+    title = models.CharField(max_length=150 ,)
     content = models.TextField(max_length = 100, blank=True, null=True)
     author = models.ForeignKey(User, on_delete=models.CASCADE , related_name="posts")
     

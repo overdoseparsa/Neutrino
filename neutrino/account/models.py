@@ -54,11 +54,11 @@ class BaseUserAccount(AbstractUser , BaseModel):
 
     is_pro_user = models.BooleanField(default=0)
     is_limited = models.BooleanField(default=0)
-    connection = models.ForeignKey(
-        'self' , on_delete=models.CASCADE , related_name = 'FOLLOWING' , null=True , blank=False
+    connection = models.ManyToManyField(
+        'self'  , related_name = 'FOLLOWING' , null=True , blank=False
     )
-    forward_connection = models.ForeignKey(
-        'self' , on_delete=models.CASCADE , related_name = 'FOLLOWER' , null=True , blank=False
+    forward_connection = models.ManyToManyField(
+        'self' ,  related_name = 'FOLLOWER' , null=True , blank=False
     )
 
    

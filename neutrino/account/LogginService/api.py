@@ -100,11 +100,18 @@ class EmailOTPLoggin(BaseLoginApi): # TODO
     """
  
 class PhoneOTPLoggin(BaseLoginApi):
+        
+    class InputLogginSerailizer(serializers.Serializer):
+        token = serializers.CharField()
+    
+    InputSerailizer = InputLogginSerailizer
+    OutputSerailizer = LogginOutputSerailizer
+
     def loggin_process(self, data, request ,  **kwargs)->AbstractUser:
         otp_phone_loggin  = PhoneOtpLoggin(data.get('token') , request)
         otp_phone_loggin.handel_user()
         return otp_phone_loggin.retricve_user
-
+    @extend_schema(request=InputSerailizer, responses=OutputSerailizer)
     def post(self, request, **kwargs):
         return super().post(request, **kwargs)
 LOGGIN_URLS_PATH = path('loggin/' , PhoneOTPLoggin.as_view() , name='Loggin')

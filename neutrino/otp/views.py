@@ -88,6 +88,7 @@ class SmsOtpSendApi(BaseOtpApi):
         return {
             'token':token , 
         }
+    @extend_schema(request=InputSerializer , responses=OTPOutSerailizer)
     def post(self, request, **kwargs):
         return super().post(request, **kwargs)
     
@@ -111,6 +112,7 @@ class PhoneVerifyApi(BaseOtpApi):
     InputSerializer  = InputVerifySerailizer
     OutputSerializer = OutputVerifySerializer 
 
+    @extend_schema(request=InputSerializer , responses=OutputSerializer)
     def post(self, request, **kwargs):
         return super().post(request, **kwargs)    
 
