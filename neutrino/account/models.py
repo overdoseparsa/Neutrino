@@ -55,10 +55,10 @@ class BaseUserAccount(AbstractUser , BaseModel):
     is_pro_user = models.BooleanField(default=0)
     is_limited = models.BooleanField(default=0)
     connection = models.ManyToManyField(
-        'self'  , related_name = 'FOLLOWING' , null=True , blank=False
+        'self'  ,   
     )
     forward_connection = models.ManyToManyField(
-        'self' ,  related_name = 'FOLLOWER' , null=True , blank=False
+        'self' ,
     )
 
    
@@ -159,7 +159,7 @@ class DefaultUser(BaseUserAccount):
     DefualtUser for auth or auhorize 
     and if we want to see the Profile info 
     we just simple requesting 
-    >>> Defualtuser.create(**kwargs)   
+    >>> Defualtuser.object.create(**kwargs)   
     ... 
     '''
 
@@ -227,5 +227,15 @@ class Profile(BaseModel): # can `t update profile
     )
     def __str__(self):
         return f'{self.user} : {self.created_at}'
+
+
+class ConnectionDetails(models.Model):
+    user = models.OneToOneField(
+        DefaultUser , on_delete=models.CASCADE , related_name="CDE_USER" 
+    )
+
+    follower_count = models.PositiveSmallIntegerField()
+    following_coun = models.PositiveBigIntegerField()
+
 
 
