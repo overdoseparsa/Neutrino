@@ -160,3 +160,56 @@ class CustomApiView:
     requests_provider = (XssSecurityProvider,)
 
 ```
+
+# 🔐 Django `SECRET_KEY` Rotation with Celery
+
+## 📌 Overview
+
+This project includes a Celery task that automatically **rotates Django's **``, updates the `.env` file, and **restarts the service** using `supervisorctl`.
+
+This mechanism improves application security and is useful in scenarios like periodic secret rotation or on-demand key changes.
+
+---
+
+## ✅ Current Implementation
+
+- Uses Python's `secrets.token_urlsafe(64)` to generate a strong secret key.
+- Safely replaces the old `SECRET_KEY` in the `.env` file by rewriting it (instead of using `sed`).
+- Restarts the Django service (e.g., `neutrino`) via `supervisorctl`.
+- Logs all actions and handles errors gracefully.
+
+### Celery Task Code
+
+```python
+@shared_task(ignore_result=True) #TODO add The hasicorp value
+def SECRET_KEY_CHANGE():
+    new_secret_key = secrets.token_urlsafe(64)
+    sed_command = f"sed -i 's/^SECRET_KEY=.*/SECRET_KEY={new_secret_key}/' .env && supervisorctl restart neutrino"
+    subprocess.run(sed_command , shell=True , check=False)
+
+```
+
+---
+
+## 🚧 Future Plans
+
+> 🛠 **TODO: Integrate HashiCorp Vault**
+
+- This current method is suitable for development and temporary setups.
+- In production, we plan to **store **``** securely in HashiCorp Vault**, and dynamically fetch it at runtime or inject it through a secrets manager or environment injection system.
+- This will eliminate the need to store sensitive keys in plaintext `.env` files and allow for secure secret rotation and audit logging.
+
+---
+
+```docker
+$ docker run --cap-add=IPC_LOCK -e 'VAULT_DEV_ROOT_TOKEN_ID=neutrino' -e 'VAULT_DEV_LISTEN_ADDRESS=0.0.0.0:1234' hashicorp/vault
+```
+- get The my_secret_value
+
+```bash 
+vault kv put secret/neutrino/config SECRET_KEY="my_secret_value"
+```
+- how het it 
+```bash
+vault kv get secret/myapp/config
+```
