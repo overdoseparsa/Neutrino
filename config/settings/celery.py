@@ -17,8 +17,11 @@ CELERY_BEAT_SCHEDULE = {
         'args': ['Hello World'],
     } , 
     'postgres_backup': {
-        'task': 'config.tasks.notify_customers',
+        'task': 'neutrino.core.backups.postgress_backup',
         'schedule': 500,
         'args': [env('DIR_BACKOPS',default=None)],
-    }
+    }, 
+    'Reload_secert_key': {
+        'task': 'neutrino.core.Security.SECRET_KEY_CHANGE',
+        'schedule': 2592000   } # one month 
 }
