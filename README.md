@@ -234,3 +234,9 @@ docker compose up -d
 docker pull regitery.parsakhaki.com/services/backend/neutrino:lastest
 
 ```
+# for more info about docker and docker registry 
+- ## https://github.com/overdoseparsa/Django-Ci-CD.git
+<br><br>
+<img src="readmePhoto/docker-regisrty.png" alt="MANDRILL" >
+
+
