@@ -213,3 +213,24 @@ vault kv put secret/neutrino/config SECRET_KEY="my_secret_value"
 ```bash
 vault kv get secret/myapp/config
 ```
+
+# How About Proudction 
+
+## Compare About how we use docker registery 
+
+**Required:**
+
+- traefik
+- docker
+
+
+## Installation
+
+```bash
+# Basic version
+docker compose up -d 
+
+
+docker pull regitery.parsakhaki.com/services/backend/neutrino:lastest
+
+```
