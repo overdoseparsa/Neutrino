@@ -7,7 +7,7 @@ ENV PYTHONUNBUFFERED 1
 
 # Installing all python dependencies
 ADD requirements/ requirements/
-RUN pip install -r requirements/local.txt
+RUN pip install -r requirements/development_production.txt 
 
 # Get the django project into the docker container
 RUN mkdir /app

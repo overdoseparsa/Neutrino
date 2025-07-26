@@ -1,5 +1,5 @@
 from django.http import HttpRequest
-from neutrino.core.provider import HttpRequest , BaseRequestValidator
+from neutrino.core.provider import  BaseRequestValidator
 from abc import ABC , abstractmethod
 from neutrino.post.models import Post
 from django.db import transaction
