@@ -23,7 +23,7 @@ project_name/
 ├── requirements.txt         #  dependencies  
 └── .env                     
 ```
-- for more info  abuot django style guide  <a>https://github.com/HackSoftware/Django-Styleguide.git</a>
+- for more info  about django style guide  <a>https://github.com/HackSoftware/Django-Styleguide.git</a>
 
 
 # info about apps 
