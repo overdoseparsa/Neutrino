@@ -15,6 +15,10 @@ class RequestsLimitationProvider(BaseRequestValidator):
         super().__init__(request)
 
 
+    
+    def configure(self):
+        return self._request
+
 from django.core.validators import RegexValidator
 import re 
 # HINT : dependency inversion princile  

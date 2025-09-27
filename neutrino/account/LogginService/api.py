@@ -74,12 +74,10 @@ class BaseLoginApi(APIView , ABC):
         self.get_logger.info(f'the pyload from Loggin Api is  requested is {self.request.POST} ' , )
         
         input_serailizer = self.get_input_serializer(data = request.POST) # property 
-        try:
-            input_serailizer.is_valid(raise_exception=True)
-            response = self.loggin_process(input_serailizer.data , request , **kwargs)
-        except BaseException as e:
-            print('InterNullERROR ' , e)
-            return bad_request(request , e)
+       
+        input_serailizer.is_valid(raise_exception=True)
+        response = self.loggin_process(input_serailizer.data , request , **kwargs)
+  
         
         outputserializer = self.get_output_serialzer(response)
 
