@@ -59,7 +59,8 @@ from .serializers import (
 	
 ) 
 class PostApiSturcter(BasePostApiView):
-
+	def dispatch(self, request, *args, **kwargs):
+		return super().dispatch(request, *args, **kwargs)
 
 
 
@@ -164,9 +165,27 @@ class ImplementtionAPiPost(PostApiSturcter):
 		print("user is " , request.user.id)
 		return Post.objects.create(title =data.get('title') , content = data.get('content') , author = request.user)
 
+	def GET_ACTION(self, request, *args):
+		query = Post.objects.filter(author=request.user)
+		from .serializers import OutputPostSerailizer
+		serizlier = OutputPostSerailizer(query , many=True)
+
+		return Response(serizlier.data , status=HTTP_200_OK)
+	
+	def get(self, request, *args):
+		return self.GET_ACTION(request, *args)
 
 test_urls = path('post/'  , ImplementtionAPiPost.as_view() , name="post_api")
 
 
+class retriveAPiPost(PostApiSturcter):
 
+	def GET_ACTION(self, request, *args):
+		query = Post.objects.filter(author=request.user)
+		from .serializers import OutputPostSerailizer
+		serizlier = OutputPostSerailizer(query , many=True)
+
+		return Response(serizlier.data , status=HTTP_200_OK)
+	
+retrive_url = path('posts/'  , retriveAPiPost.as_view() , name="post_api")
 
