@@ -15,9 +15,11 @@ class KavenegarProvider(KavenegarAPI):
 
 class TestProvider:
     def Send_Message(self , subject  , receiver  ,sender , message):
-        params ={'receptor':receiver , 
+        params = {'receptor':receiver , 
                  'sender':sender , 
-                 'message':f'{subject}' +  f'\n {message}' 
+                 'message':f'{subject}' +  f'{message}' 
                 }
         print( 'sendng message' ,  params)
+        return params
 
+# OTP createted for bar test 

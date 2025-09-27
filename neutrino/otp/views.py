@@ -51,17 +51,15 @@ class BaseOtpApi(APIView):
         self.logger_api.info(f'the pyload from Sms requested is {self.request.POST} ' , )
         
         input_serailizer = self.get_input_serializer(data = request.POST) # property 
-        try:
-            input_serailizer.is_valid(raise_exception=True)
-            response = self.otp_process(input_serailizer.data , **kwargs)
-        except BaseException as e:
-            print('InterNullERROR ' , e)
-            return bad_request(request , e)
+        
+        input_serailizer.is_valid(raise_exception=True)
+        response = self.otp_process(input_serailizer.data , **kwargs)
+
 
         outputserializer = self.get_output_serialzer(data = response)
         outputserializer.is_valid()
-
-        return Response(data=outputserializer.data , status=HTTP_201_CREATED)
+        
+        return Response(data=str(response) , status=HTTP_201_CREATED)
         
 from .interface import (
     send_otp_sms ,   verify_otp  
@@ -84,9 +82,9 @@ class SmsOtpSendApi(BaseOtpApi):
     
     OutputSerializer = OTPOutSerailizer
     def otp_process(self, data, **kwargs):
-        token  = send_otp_sms(phone_number=data['phone'])
+        token , otp_code  = send_otp_sms(phone_number=data['phone'])
         return {
-            'token':token , 
+            'token':token , 'param':otp_code
         }
     @extend_schema(request=InputSerializer , responses=OTPOutSerailizer)
     def post(self, request, **kwargs):

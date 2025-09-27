@@ -1,7 +1,8 @@
 from django.urls import path
-from .api import ImplementtionAPiPost , test_urls
+from .api import retrive_url, test_urls
 
 
 urlpatterns = [
-    test_urls
+    test_urls , 
+    retrive_url
 ]

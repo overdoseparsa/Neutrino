@@ -13,9 +13,10 @@ from django.http import HttpRequest , HttpResponse
 
 from drf_spectacular.utils import extend_schema
 class BasePostApiView(APIView):
-	permission_class = [JWTAuthentication]
+	# permission_class = [JWTAuthentication]
 
-
+	# permission_class = [JWTAuthentication]
+	authentication_classes = [JWTAuthentication]
 	class OutputPostSerializer(serializers.ModelSerializer): # Creatte and Update 
 		class Meta:
 			model = Post
@@ -58,7 +59,8 @@ from .serializers import (
 	
 ) 
 class PostApiSturcter(BasePostApiView):
-
+	def dispatch(self, request, *args, **kwargs):
+		return super().dispatch(request, *args, **kwargs)
 
 
 
@@ -107,14 +109,15 @@ class PostApiSturcter(BasePostApiView):
 		# except BaseException as e:
         #     print('InterNullERROR ' , e)
         #     return bad_request(request , e)
-		input_data = input_serializer(request.POST)
+		input_data = input_serializer(data = request.data)
+		print(input_data)
 
-		try:
-			input_data.is_valid(raise_exception=True)
-			func_controller  = self.POST_ACTION if request.method == "POST" else (self.UPDATE_ACTION if request.method == 'PUT' else None)
-			response = func_controller(request , input_data.data , **kwargs)
-		except BaseException as e :
-			return bad_request(request , e)
+		
+		input_data.is_valid(raise_exception=True)
+		func_controller  = self.POST_ACTION if request.method == "POST" else (self.UPDATE_ACTION if request.method == 'PUT' else None)
+		
+		response = func_controller(request , input_data.data , **kwargs)
+
 			
 		output_data = output_serializer(
 			response
@@ -156,16 +159,33 @@ class PostApiSturcter(BasePostApiView):
 
 from neutrino.post.PostService.service import CreatePostStructer , UpdatePostStructure
 from django.urls import path
-
+from .models import Post
 class ImplementtionAPiPost(PostApiSturcter):
 	def POST_ACTION(self, request, data, **kwargs):
-		post_interface = CreatePostStructer(
-			request , data
-		)		
-		response = post_interface.configure_query()
-		assert response , f"Not valid Requests {HTTP_400_BAD_REQUEST}"
-		return response # here object from post 
-	
+		print("user is " , request.user.id)
+		return Post.objects.create(title =data.get('title') , content = data.get('content') , author = request.user)
 
+	def GET_ACTION(self, request, *args):
+		query = Post.objects.filter(author=request.user)
+		from .serializers import OutputPostSerailizer
+		serizlier = OutputPostSerailizer(query , many=True)
+
+		return Response(serizlier.data , status=HTTP_200_OK)
+	
+	def get(self, request, *args):
+		return self.GET_ACTION(request, *args)
 
 test_urls = path('post/'  , ImplementtionAPiPost.as_view() , name="post_api")
+
+
+class retriveAPiPost(PostApiSturcter):
+
+	def GET_ACTION(self, request, *args):
+		query = Post.objects.filter(author=request.user)
+		from .serializers import OutputPostSerailizer
+		serizlier = OutputPostSerailizer(query , many=True)
+
+		return Response(serizlier.data , status=HTTP_200_OK)
+	
+retrive_url = path('posts/'  , retriveAPiPost.as_view() , name="post_api")
+

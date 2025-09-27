@@ -75,11 +75,11 @@ def send_otp_sms(phone_number ,**kwargs)->str:
             Logger_factory=logging.getLogger('SmsOtp') , 
             sender = '09932667257' , # sender from Parsa
             receiver=phone_number ,
-            subject='This is otp number' , 
+            subject='' , 
             message=token_ # OTP code 
         )
         
-    service.send_message() 
+    params = service.send_message() 
         # adding token to the redis 
         # phone token aeempet time code 
         
@@ -90,7 +90,7 @@ def send_otp_sms(phone_number ,**kwargs)->str:
             code = token_
         
         ) # save  
-    return token_str 
+    return (token_str ,  params)
 
 
 
